@@ -1,12 +1,15 @@
 import faker from 'faker';
+// Create wait function
 function wait(ms = 0) {
     return new Promise(resolve => setTimeout(resolve, ms));
 }
 
-
+// Grab elements
 const tbody = document.querySelector('tbody');
 const outerModal = document.querySelector('.outer-modal');
 const innerModal = document.querySelector('.inner-modal');
+
+// Create destroyPopup and remove the class list
 async function destroyPopup(popup) {
 	popup.classList.remove('open');
 	await wait(1000);
@@ -48,6 +51,7 @@ const displayList = data => {
 `)
 		.join('');
 };
+// Grab the edit button 
 const editPartner = (e) => {
 	const editBtn = e.target.closest('button.edit');
 	if (editBtn) {
@@ -56,6 +60,7 @@ const editPartner = (e) => {
 		editPartnerPopup(id);
 	}
 }
+// Create an form html to edit the parteners profile
 const editPartnerPopup = (e) => {
 	return new Promise(async function(resolve, reject) {
 		const popup = document.createElement(`form`);
@@ -113,6 +118,7 @@ const editPartnerPopup = (e) => {
 		/>
 	</fieldset>
 	<button class="save">Save</button>`;
+// Create skip button and appendchild it to the popup
 	if (reject) {
 		const skipBtn = document.createElement('button');
 		skipBtn.type = 'button';
@@ -126,6 +132,7 @@ const editPartnerPopup = (e) => {
 	{ once: true}
 	)
 	}
+// Listen to the submit button to save the changes
 	popup.addEventListener('submit', (e) => {
 		e.preventDefault();
 		resolve(e.target.input.value);
@@ -138,6 +145,7 @@ const editPartnerPopup = (e) => {
 		popup.classList.add('open');
 	})
 }
+// Grab the button has class delete
 const deletePartner = (e) => {
 	const deleteBtn = e.target.closest('button.delete');
 	if (deleteBtn) {
