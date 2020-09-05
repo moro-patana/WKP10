@@ -30,6 +30,16 @@ When you'll click on the trash icon, a popup will also appear. It will ask you a
 ## Student Report
 
 -   What was the main challenge that you had to face during the project?
+1. I was struggle with the pupup and the cancel button but I got them by the end.
+
 -   Did you use Promise callbacks? Or Async Await?
+Yes I do.I use async function to the delete partener and the edit partener function.
+I return a new promise in each function:
+  1. editPartener
+  2. deletePartener
+
+**NB**: In generall, it was so good practice for me and recaputulate our last lesson about popup and promise. In one word, summary of what we have done.
+  Thank you very much!
+  
 
 Good luck everybody 🐻
