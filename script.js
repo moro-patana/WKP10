@@ -1,14 +1,11 @@
 import faker from 'faker';
 // Create wait function
 function wait(ms = 0) {
-    return new Promise(resolve => setTimeout(resolve, ms));
+	return new Promise(resolve => setTimeout(resolve, ms));
 }
 
 // Grab elements
 const tbody = document.querySelector('tbody');
-const outerModal = document.querySelector('.outer-modal');
-const innerModal = document.querySelector('.inner-modal');
-
 // Create destroyPopup and remove the class list
 async function destroyPopup(popup) {
 	popup.classList.remove('open');
@@ -56,124 +53,133 @@ const editPartner = (e) => {
 	const editBtn = e.target.closest('button.edit');
 	if (editBtn) {
 		e.preventDefault();
-		const id = e.target.value;
-		console.log(id);
+		const findTr = e.target.closest('tr');
+		const btn = findTr.querySelector('.edit')
+		const id = btn.value
 		editPartnerPopup(id);
 	}
 }
 // Create an form html to edit the parteners profile
 const editPartnerPopup = (id) => {
-	return new Promise(async function(resolve, reject) {
-		const person = persons.find(person => person.id === id );
+	return new Promise(async function (resolve, reject) {
+		const person = persons.find(person => person.id === id);
 		console.log(id);
 		const popup = document.createElement(`form`);
-		popup.classList.add(`popup`);
+		popup.classList.add('popup');
 		popup.innerHTML = `
 		<h4>Edit Partener</h4>
-	<fieldset>
-		<label for="lastname">Lastname</label>
-		<input
-			type="text"
-			required
-			name="lastname"
-			id="lastname"
-			value
-			="${person.lastName}"
-		/>
-	</fieldset>
-	<fieldset>
-		<label for="firstName">Firstname</label>
-		<input
-			type="text"
-			required
-			name="firstName"
-			id="firstName"
-			value
-			="${person.firstName}"
-		/>
-	</fieldset>
-	<fieldset>
-		<label for="jobTitle">Job title</label>
-		<input
-			type="text"
-			required
-			name="jobTitle"
-			id="jobTitle"
-			value
-			="${person.jobTitle}"
-		/>
-	</fieldset>
-	<fieldset>
-		<label for="jobArea">Job Area</label>
-		<input
-			type="text"
-			required
-			name="jobArea"
-			id="jobArea"
-			value
-			="${person.jobArea}"
-		/>
-	</fieldset>
-	<fieldset>
-		<label for="phone">Phone Number</label>
-		<input
-			type="text"
-			required
-			name="phone"
-			id="phone"
-			value
-			="${person.phone}"
-		/>
-	</fieldset>
-	<button class="save">Save</button>`;
-// Create skip button and appendchild it to the popup
-	if (reject) {
-		const skipBtn = document.createElement('button');
-		skipBtn.type = 'button';
-		skipBtn.textContent = "Cancel";
-		skipBtn.classList.add("cancel");
-		popup.appendChild(skipBtn);
-		skipBtn.addEventListener('click', () => {
-			resolve(null);
+		  <div class="container">
+			<fieldset>
+				<label for="lastname">Lastname</label>
+				<input
+					type="text"
+					required
+					name="lastname"
+					id="lastname"
+					value
+					="${person.lastName}"
+				/>
+			</fieldset>
+			<fieldset>
+				<label for="firstName">Firstname</label>
+				<input
+					type="text"
+					required
+					name="firstName"
+					id="firstName"
+					value
+					="${person.firstName}"
+				/>
+			</fieldset>
+			<fieldset>
+				<label for="jobTitle">Job title</label>
+				<input
+					type="text"
+					required
+					name="jobTitle"
+					id="jobTitle"
+					value
+					="${person.jobTitle}"
+				/>
+			</fieldset>
+			<fieldset>
+				<label for="jobArea">Job Area</label>
+				<input
+					type="text"
+					required
+					name="jobArea"
+					id="jobArea"
+					value
+					="${person.jobArea}"
+				/>
+			</fieldset>
+			<fieldset>
+				<label for="phone">Phone Number</label>
+				<input
+					type="text"
+					required
+					name="phone"
+					id="phone"
+					value
+					="${person.phone}"
+				/>
+			</fieldset>
+			<button type="submit" class="save">Save</button>
+		</div>`;
+		// Create skip button and appendchild it to the popup
+		if (reject) {
+			const skipBtn = document.createElement('button');
+			skipBtn.type = 'button';
+			skipBtn.textContent = "Cancel";
+			skipBtn.classList.add("cancel");
+			popup.appendChild(skipBtn);
+			skipBtn.addEventListener('click', () => {
+				resolve(null);
+				destroyPopup(popup);
+			},
+				{ once: true }
+			)
+		}
+		// Listen to the submit button to save the changes
+		popup.addEventListener('submit', (e) => {
+			e.preventDefault();
+			// resolve(e.target.input.value);
+			const form = e.target;
+			person.lastName = form.lastname.value;
+			person.firstName = form.firstName.value;
+			person.jobTitle = form.jobTitle.value;
+			person.jobArea = form.jobArea.value;
+			person.phone = form.phone.value;
+			person.id = form.id.value;
+
+			displayList(persons);
 			destroyPopup(popup);
-},
-	{ once: true}
-	)
-	}
-// Listen to the submit button to save the changes
-	popup.addEventListener('submit', (e) => {
-		e.preventDefault();
-		// resolve(e.target.input.value);
-		const newPerson = {};
-		const form = e.currentTarget;
-		id: id;
-		lastName: form.value;
-		firstName: form.value;
-		jobTitle: form.value;
-		jobArea: form.value;
-		phone: form.value;
-		console.log(newPerson);
-	},
-	{ once: true}
-	)
+		},
+			{ once: true }
+		)
 		document.body.appendChild(popup);
 		await wait(50);
 		popup.classList.add('open');
 	})
 }
+
 // Grab the button has class delete
 const deletePartner = (e) => {
 	const deleteBtn = e.target.closest('button.delete');
 	if (deleteBtn) {
+		const tableRow = e.target.closest('tr');
 		e.preventDefault();
-		const id = e.target.dataset.value;
+		const id = tableRow.dataset.id;
 		deletePartnerPopup(id);
 	}
+
 };
 
-const deletePartnerPopup = () => {
+
+const deletePartnerPopup = (id) => {
 	// create confirmation popup here
-	return new Promise(async function(resolve) {
+	console.log(id);
+	return new Promise(async function (resolve) {
 		const modal = document.createElement('div');
 		modal.classList.add('modal');
 		modal.innerHTML = `
@@ -186,13 +192,28 @@ const deletePartnerPopup = () => {
 		document.body.appendChild(modal);
 		await wait(50);
 		modal.classList.add('open');
+		
+		modal.addEventListener('click', (e) => {
+			if (e.target.closest('button.yes')) {
+				const personToDelete = persons.filter(person => person.id !== id);
+				persons = personToDelete;
+				displayList(personToDelete);
+				modal.classList.remove("open");
+				destroyPopup(modal)
 
+			}
+		});
+		window.addEventListener('click', e => {
+			if (e.target.closest('button.no')) {
+				destroyPopup(modal);
+			}
+		})
 	})
 }
 
 
 tbody.addEventListener('click', editPartner);
 tbody.addEventListener('click', deletePartner);
- 
+
 
 displayList(persons);
